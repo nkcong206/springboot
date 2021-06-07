@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 import io.jsonwebtoken.Jwts;
@@ -12,10 +11,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 import java.security.Key;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.Random;
 
 @Controller
 @RequestMapping("/user")
@@ -40,11 +35,12 @@ public class UserController {
         return "User found";
     }
 
-    @PostMapping("/save")
+    @PostMapping("/create")
     public @ResponseBody
     Boolean createUser(@RequestBody User user) {
+        User abc = userRepository.findByUsername(user.getUsername());
         try {
-            userRepository.save(user);
+            userRepository.save(abc);
             return true;
         } catch (Exception e) {
         }
@@ -58,27 +54,28 @@ public class UserController {
         if (abc == null) {
             return "khong co tai khoan nay";
         }
-        Instant now = Instant.now();
-        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-        String jwt = Jwts.builder()
-                .setSubject("Brian Demers")
-                .setAudience("video demo")
-                .claim("1d20", new Random().nextInt(20) + 1)
-                .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.minus(1, ChronoUnit.MINUTES)))
-                .signWith(key)
-                .compact();
-        return jwt;
+        return "co tai khoan nay";
     }
 
     @PostMapping("/delete")
     public @ResponseBody
     Boolean deleteUser(@RequestBody User user) {
-        User user1 = userRepository.findByUsername(user.getUsername());
-        if (user1 == null) {
+        User abc = userRepository.findByUsername(user.getUsername());
+        if (abc == null) {
             return false;
         }
-        userRepository.delete(user1);
+        userRepository.delete(abc);
+        return true;
+    }
+
+    @PostMapping("/update")
+    public @ResponseBody Boolean updateUser(@RequestBody ChangePassword changePassword){
+        User abc = userRepository.findByUsernameAndPassword(changePassword.getUsername(), changePassword.getOld_password());
+        if(abc == null){
+            return false;
+        }
+        abc.setPassword(changePassword.getNew_password());
+        userRepository.save(abc);
         return true;
     }
 }
