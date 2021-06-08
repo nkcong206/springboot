@@ -6,11 +6,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-
-import java.security.Key;
+// import io.jsonwebtoken.Jwts;
+// import io.jsonwebtoken.SignatureAlgorithm;
+// import io.jsonwebtoken.security.Keys;
+// import java.security.Key;
 
 @Controller
 @RequestMapping("/user")
@@ -78,4 +77,5 @@ public class UserController {
         userRepository.save(abc);
         return true;
     }
+
 }
