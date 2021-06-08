@@ -33,10 +33,13 @@ public class UserController {
     public @ResponseBody
     Boolean createUser(@RequestBody User user) {
         User abc = userRepository.findByUsername(user.getUsername());
-        try {
-            userRepository.save(abc);
+        if(abc == null) {
+            try {
+            userRepository.save(user);
             return true;
         } catch (Exception e) {
+        }
+        return false;
         }
         return false;
     }
